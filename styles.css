@@ -63,6 +63,16 @@ td {
     justify-content: space-between;
     margin-right: 10px;
 }
+#tooltip {
+    position: absolute;
+    background-color: #444444;
+    border: 1px solid black;
+    padding: 5px;
+    display: none; /* Hidden by default */
+    z-index: 1000; /* Ensure it’s above other elements */
+    max-width: 200px; /* Prevent it from getting too wide */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Optional: adds a subtle shadow */
+}
 
 #artifact-container {
     flex-grow: 1; /* Pushes the stats section to the bottom */

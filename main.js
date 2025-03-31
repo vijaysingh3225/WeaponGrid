@@ -5,8 +5,35 @@ const grid = { "0,0": rootCell };
 const sampleArtifacts = [
     new Artifact("Gaia's Tear", 10, 5, 0, "./images/Artifact-1.png"),
     new Artifact("Starfall Fragment", 0, 0, 10, "./images/Artifact-2.png"),
-    new Artifact("MoonStone", 20, 0, 0, "./images/Artifact-3.png")
+    new Artifact("MoonStone", 20, 0, 0, "./images/Artifact-3.png"),
+    new StrengthStone("StrengthStone", 20, 0, 0, "./images/Artifact-4.png")
 ];
+
+// Create tooltip element
+const tooltip = document.createElement("div");
+tooltip.id = "tooltip";
+document.body.appendChild(tooltip);
+
+// Show tooltip with artifact details
+function showTooltip(e, artifact, grid, position) {
+    const stats = artifact.calculateStats(grid, position);
+    tooltip.innerHTML = `
+        <strong>${artifact.name}</strong><br>
+        Health: ${stats.health}<br>
+        Physical: ${stats.physical}<br>
+        Magical: ${stats.magical}
+    `;
+    const x = e.clientX + 10; // Offset from cursor
+    const y = e.clientY + 10;
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.style.display = "block";
+}
+
+// Hide tooltip
+function hideTooltip() {
+    tooltip.style.display = "none";
+}
 
 // Function to calculate grid statistics
 function getGridStats() {
@@ -17,11 +44,12 @@ function getGridStats() {
     let openSlots = 0;
     let takenSlots = 0;
 
-    for (const cell of Object.values(grid)) {
+    for (const [position, cell] of Object.entries(grid)) {
         if (cell.artifact) {
-            totalHealth += cell.artifact.health;
-            totalPhysical += cell.artifact.physical;
-            totalMagical += cell.artifact.magical;
+            const stats = cell.artifact.calculateStats(grid, position);
+            totalHealth += stats.health;
+            totalPhysical += stats.physical;
+            totalMagical += stats.magical;
             totalArtifacts++;
             takenSlots++;
         } else {
@@ -59,11 +87,9 @@ function populateToolbar() {
     const toolbar = document.getElementById("tool-bar");
     toolbar.innerHTML = ""; // Clear existing content
 
-    // Create a container for artifacts
     const artifactContainer = document.createElement("div");
     artifactContainer.id = "artifact-container";
 
-    // Add artifact images
     sampleArtifacts.forEach(artifact => {
         const artifactElem = document.createElement("img");
         artifactElem.src = artifact.image;
@@ -73,14 +99,15 @@ function populateToolbar() {
         artifactElem.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("text/plain", artifact.name);
         });
+        // Add hover events for tooltip
+        artifactElem.addEventListener("mouseenter", (e) => showTooltip(e, artifact, null, null));
+        artifactElem.addEventListener("mouseleave", hideTooltip);
         artifactContainer.appendChild(artifactElem);
     });
 
-    // Add stats section
     const statsSection = document.createElement("div");
     statsSection.id = "stats-section";
 
-    // Append everything to the toolbar
     toolbar.appendChild(artifactContainer);
     toolbar.appendChild(statsSection);
 
@@ -92,17 +119,14 @@ function renderGrid() {
     const container = document.getElementById("cell-container");
     container.innerHTML = ""; // Clear the container
 
-    // Get all existing cell positions
     const positions = Object.keys(grid).map(key => key.split(",").map(Number));
-    if (positions.length === 0) return; // Handle empty grid
+    if (positions.length === 0) return;
 
-    // Calculate table bounds, expanding by 1 in each direction for adjacent slots
     const minX = Math.min(...positions.map(p => p[0])) - 1;
     const maxX = Math.max(...positions.map(p => p[0])) + 1;
     const minY = Math.min(...positions.map(p => p[1])) - 1;
     const maxY = Math.max(...positions.map(p => p[1])) + 1;
 
-    // Create the table
     const table = document.createElement("table");
     for (let y = minY; y <= maxY; y++) {
         const row = document.createElement("tr");
@@ -111,45 +135,42 @@ function renderGrid() {
             const cell = grid[key];
             const cellTd = document.createElement("td");
 
-            // Check if this position is adjacent to an existing cell
             const isAdjacent = ["up", "down", "left", "right"].some(dir => getNeighbor(x, y, dir));
 
             if (cell) {
-                // Render existing cell
                 cellTd.classList.add("existing-cell");
                 if (cell.artifact) {
                     const img = document.createElement("img");
                     img.src = cell.artifact.image;
                     img.alt = cell.artifact.name;
                     img.classList.add("cell-image");
+                    // Add hover events for tooltip
+                    img.addEventListener("mouseenter", (e) => showTooltip(e, cell.artifact, grid, key));
+                    img.addEventListener("mouseleave", hideTooltip);
                     cellTd.appendChild(img);
                 }
-                // Make cell droppable
                 cellTd.addEventListener("dragover", (e) => {
-                    e.preventDefault(); // Allow drop
+                    e.preventDefault();
                 });
                 cellTd.addEventListener("drop", (e) => {
                     e.preventDefault();
                     const artifactName = e.dataTransfer.getData("text/plain");
                     const artifact = sampleArtifacts.find(a => a.name === artifactName);
                     if (artifact) {
-                        cell.artifact = artifact; // Set the cell's artifact
-                        renderGrid(); // Re-render to update display
-                        updateStats(); // Update stats after change
+                        cell.artifact = artifact;
+                        renderGrid();
+                        updateStats();
                     }
                 });
             } else {
-                // Render empty slot
                 cellTd.classList.add("empty-slot");
                 if (isAdjacent) {
-                    // Add button for adjacent slots
                     const btn = document.createElement("button");
                     btn.classList.add("add-cell-button");
                     btn.textContent = "+";
                     btn.onclick = () => {
                         const newCell = new Cell();
                         grid[key] = newCell;
-                        // Link the new cell to its neighbors
                         ["up", "down", "left", "right"].forEach(dir => {
                             const neighbor = getNeighbor(x, y, dir);
                             if (neighbor) {
@@ -168,8 +189,8 @@ function renderGrid() {
                                 }
                             }
                         });
-                        renderGrid(); // Re-render the grid
-                        updateStats(); // Update stats after change
+                        renderGrid();
+                        updateStats();
                     };
                     cellTd.appendChild(btn);
                 }
