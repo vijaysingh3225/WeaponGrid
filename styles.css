@@ -1,0 +1,47 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #444444;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#cell-container {
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+td {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    position: relative;
+    vertical-align: middle;
+}
+
+.existing-cell {
+    background-color: rgb(110, 110, 110);
+    border: 2px solid rgb(77, 77, 77);
+    color: white;
+    font-weight: bold;
+}
+
+.empty-slot {
+    background-color: #444444;
+    border: none;
+}
+
+.add-cell-button {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgb(56, 61, 61);
+}
