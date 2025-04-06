@@ -74,10 +74,10 @@ td {
     box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* Optional: adds a subtle shadow */
 }
 
-#artifact-container {
-    flex-grow: 1; /* Pushes the stats section to the bottom */
+#artifact-container { /* Pushes the stats section to the bottom */
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    
 }
 
 .artifact {
@@ -97,14 +97,14 @@ td {
 
 .artifact {
     width: 50px;
-    height: auto;
     margin: 5px;
     cursor: grab;
+    height: 60px;
 }
 
 /* Style for artifact images in the grid cells */
 .cell-image {
-    width: 80px;
+    width: 50px;
     height: auto;
 }
 
@@ -115,4 +115,25 @@ td {
     border: 1px solid black;
     text-align: center;
     vertical-align: middle;
+}
+
+.add-cell-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.percent-label {
+    font-size: 0.75em;
+    color: white;
+    margin-top: 4px;
+}
+
+.delete-area{
+    background-color: #606060;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 4rem;
 }
