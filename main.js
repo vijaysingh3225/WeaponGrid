@@ -8,6 +8,8 @@ const sampleArtifacts = [
     new Artifact("MoonStone", 20, 0, 0, "./images/Artifact-3.png"),
     new StrengthStone("StrengthStone", 20, 0, 0, "./images/Artifact-4.png"),
     new Artifact("VoidReaver", 20, 0, 0, "./images/VoidArtifact2.png"),
+    new Artifact("VoidReaver", 20, 0, 0, "./images/Artifact-5.png"),
+    new Artifact("VoidReaver", 20, 0, 0, "./images/Artifact-6.png"),
 ];
 
 // Tooltip
@@ -254,7 +256,8 @@ function getAdjacentPositions() {
 function addRandomCellButton() {
     const toolbar = document.getElementById("tool-bar");
     const button = document.createElement("button");
-    button.textContent = "Add Random Cell";
+    button.id = "level-button";
+    button.textContent = "Level Up";
     button.onclick = () => {
         const adjacentPositions = getAdjacentPositions();
         if (adjacentPositions.length > 0) {

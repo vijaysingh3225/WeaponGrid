@@ -45,7 +45,6 @@ td {
     font-size: 16px;
     cursor: pointer;
     background-color: rgb(56, 61, 61);
-    color: white;
 }
 
 #tool-bar {
@@ -77,11 +76,13 @@ td {
 #artifact-container { /* Pushes the stats section to the bottom */
     display: flex;
     flex-wrap: wrap;
-    
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
 }
 
 .artifact {
-    background-color: #555;
+    background-color: #636363;
     color: white;
     padding: 10px;
     margin: 5px 0;
@@ -126,7 +127,7 @@ td {
 
 .percent-label {
     font-size: 0.75em;
-    color: white;
+    color: #afafaf;
     margin-top: 4px;
 }
 
@@ -136,4 +137,11 @@ td {
     height: 100px;
     text-align: center;
     font-size: 4rem;
+    margin: 0 auto;
+}
+
+#level-button{
+    height:50px;
+    width:120px;
+    margin:0px auto ;
 }
